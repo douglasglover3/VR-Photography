@@ -5,12 +5,19 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEditor.VersionControl;
 using UnityEngine;
+using UnityEngine.UIElements;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
+using System.Linq;
+using Unity.XR.CoreUtils;
+using Unity.VisualScripting;
 
 public class CameraControls : MonoBehaviour
 {
     Camera cmra;
     Texture2D photo;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -21,7 +28,7 @@ public class CameraControls : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
 
