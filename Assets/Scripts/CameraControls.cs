@@ -10,26 +10,34 @@ using UnityEngine.UI;
 using System.Linq;
 using Unity.XR.CoreUtils;
 using Unity.VisualScripting;
+using UnityEngine.InputSystem;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class CameraControls : MonoBehaviour
 {
-    Camera cmra;
+    public static Camera cmra;
     Texture2D photo;
-
+    XRGrabInteractable interactable;
+    XRBaseInputInteractor interactor;
 
     // Start is called before the first frame update
     void Start()
     {
         cmra = GetComponent<Camera>();
+        interactable = GetComponentInParent<XRGrabInteractable>();
+    }
+
+    public void PickUpCamera()
+    {
+        interactor = interactable.interactorsSelecting[0] as XRBaseInputInteractor;
+    }
+
+    public void LetGoOfCamera()
+    {
         
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
 
     public void TakePhoto()
     {
@@ -53,7 +61,13 @@ public class CameraControls : MonoBehaviour
         photo.Apply();
         RenderTexture.active = old_rt;
 
+        if (interactable.isSelected)
+        {
+            interactor.SendHapticImpulse(0.2f, 0.2f);
+        }
+
         byte[] bytes = photo.EncodeToPNG();
+        Directory.CreateDirectory(Application.persistentDataPath + "/photos");
         File.WriteAllBytes(Application.persistentDataPath + "/photos/" + "photo_" + filename_suffix + ".png", bytes);
     }
 }

@@ -10,15 +10,18 @@ using Unity.VisualScripting;
 
 public class GalleryControls : MonoBehaviour
 {
-    private RawImage imageComponent;
+    RawImage imageComponent;
     private List<string> imagePaths = new List<string> { };
     private int currentImageIndex = 0;
-
+    bool forceActivate = false;
+    Transform GalleryPanel;
 
     void Start()
     {
+        GalleryPanel = GameObject.Find("Gallery Panel").transform;
         imageComponent = GetComponent<RawImage>();
         imageComponent.color = Color.clear;
+        GalleryPanel.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -34,13 +37,20 @@ public class GalleryControls : MonoBehaviour
 
     IEnumerator TemporaryFunction()
     {
+        GalleryPanel.gameObject.SetActive(true);
         ActivateGallery();
+        forceActivate = false;
         yield return new WaitForSeconds(4);
-        DeactivateGallery();
+        if (forceActivate == false)
+        {
+            DeactivateGallery();
+            GalleryPanel.gameObject.SetActive(false);
+        }
     }
 
     public void ActivateGallery()
     {
+        forceActivate = true;
         // Load images from persistent data path
         string imageFolderPath = Path.Combine(Application.persistentDataPath, "photos");
 
@@ -85,7 +95,7 @@ public class GalleryControls : MonoBehaviour
         imageComponent.texture = texture;
     }
 
-    private void NextImage()
+    public void NextImage()
     {
         if (currentImageIndex < imagePaths.Count)
         {
@@ -95,7 +105,7 @@ public class GalleryControls : MonoBehaviour
 
     }
 
-    private void PreviousImage()
+    public void PreviousImage()
     {
         if (currentImageIndex > 0)
         {
