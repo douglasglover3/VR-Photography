@@ -32,25 +32,25 @@ public class GalleryControls : MonoBehaviour
 
     public void TemporarilyActivateGallery()
     {
+        GalleryPanel.gameObject.SetActive(true);
         StartCoroutine(TemporaryFunction());
     }
 
     IEnumerator TemporaryFunction()
     {
-        GalleryPanel.gameObject.SetActive(true);
         ActivateGallery();
         forceActivate = false;
         yield return new WaitForSeconds(4);
         if (forceActivate == false)
         {
             DeactivateGallery();
-            GalleryPanel.gameObject.SetActive(false);
         }
     }
 
     public void ActivateGallery()
     {
         forceActivate = true;
+        
         // Load images from persistent data path
         string imageFolderPath = Path.Combine(Application.persistentDataPath, "photos");
 
@@ -84,6 +84,7 @@ public class GalleryControls : MonoBehaviour
     public void DeactivateGallery()
     {
         imageComponent.color = Color.clear;
+        GalleryPanel.gameObject.SetActive(false);
     }
 
     private void LoadImage(string imagePath)

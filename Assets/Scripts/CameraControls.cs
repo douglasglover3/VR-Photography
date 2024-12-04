@@ -21,22 +21,31 @@ public class CameraControls : MonoBehaviour
     Texture2D photo;
     XRGrabInteractable interactable;
     XRBaseInputInteractor interactor;
+    Transform tfm;
+    Transform pocket_tfm;
 
     // Start is called before the first frame update
     void Start()
     {
         cmra = GetComponent<Camera>();
+        tfm = GetComponent<Transform>().parent;
+        pocket_tfm = GameObject.Find("Pocket").transform;
         interactable = GetComponentInParent<XRGrabInteractable>();
     }
 
     public void PickUpCamera()
     {
         interactor = interactable.interactorsSelecting[0] as XRBaseInputInteractor;
+        tfm.parent = null;
+        tfm.gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
     }
 
     public void LetGoOfCamera()
     {
-        
+        tfm.parent = pocket_tfm;
+        tfm.localPosition = new Vector3(0, 0, 0);
+        tfm.localRotation = new Quaternion(0, 0, 0, 0);
+        tfm.gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
     }
 
     public void TakePhoto()

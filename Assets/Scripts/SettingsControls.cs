@@ -9,6 +9,7 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class SettingsControls : MonoBehaviour
 {
+    Transform UICanvas;
     Transform SettingsPanel;
     Transform GalleryPanel;
     string[] ShutterSpeedValues = { "1/2", "1/4", "1/8", "1/15", "1/30", "1/60", "1/125", "1/250", "1/500", "1/1000", "1/2000", "1/4000", "1/8000" };
@@ -28,12 +29,14 @@ public class SettingsControls : MonoBehaviour
     MotionBlur Motionblur;
     FilmGrain Grain;
     ColorAdjustments Color;
+    bool screenSizeExpanded = false;
 
     // Start is called before the first frame update
     void Start()
     {
         SettingsPanel = GetComponent<Transform>();
-        GalleryPanel = GameObject.Find("Gallery Panel").transform;
+        UICanvas = SettingsPanel.parent;
+        GalleryPanel = UICanvas.GetChild(2);
         GlobalVolume = GameObject.Find("Global Volume").GetComponent<Volume>();
         GlobalVolume.profile.TryGet<DepthOfField>(out DoF);
         GlobalVolume.profile.TryGet<MotionBlur>(out Motionblur);
@@ -78,10 +81,30 @@ public class SettingsControls : MonoBehaviour
         Color.postExposure.value = ShutterSpeedExposure[CurrentShutterSpeed] + ApertureExposure[CurrentAperture] + ISOExposure[CurrentISO];
     }
 
+
+    public void ExpandScreen()
+    {
+        if (!GalleryPanel.gameObject.activeSelf && !SettingsPanel.gameObject.activeSelf)
+        {
+            PressSettings();
+        }
+        screenSizeExpanded = true;
+        UICanvas.localPosition = new Vector3(0, 0, -200);
+        UICanvas.localScale = new Vector3(3, 3, 3);
+    }
+
+    public void ReduceScreen()
+    {
+        screenSizeExpanded = false;
+        UICanvas.localPosition = new Vector3(0, 0, 0);
+        UICanvas.localScale = new Vector3(1, 1, 1);
+    }
+
     public void PressBack()
     {
         GalleryPanel.gameObject.SetActive(false);
         SettingsPanel.gameObject.SetActive(false);
+        ReduceScreen();
     }
 
     public void PressGallery()
