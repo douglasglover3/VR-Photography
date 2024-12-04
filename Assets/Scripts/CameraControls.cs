@@ -2,18 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
-using UnityEngine.UIElements;
-using UnityEngine.Rendering;
-using UnityEngine.UI;
-using System.Linq;
-using Unity.XR.CoreUtils;
-using Unity.VisualScripting;
-using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
-using UnityEngine.XR.Interaction.Toolkit;
 
 public class CameraControls : MonoBehaviour
 {
@@ -32,7 +23,7 @@ public class CameraControls : MonoBehaviour
         cmra = GetComponent<Camera>();
         tfm = GetComponent<Transform>().parent;
         pocket_tfm = GameObject.Find("Pocket").transform;
-        player_camera_tfm = pocket_tfm.parent.GetChild(0).transform.GetChild(0).transform;
+        player_camera_tfm = pocket_tfm.parent.Find("Camera Offset").transform.Find("Main Camera").transform;
         interactable = GetComponentInParent<XRGrabInteractable>();
     }
 
@@ -40,8 +31,8 @@ public class CameraControls : MonoBehaviour
     {
         if (camera_pocketed)
         {
-            pocket_tfm.localRotation = new Quaternion(0, player_camera_tfm.localRotation.y, 0, 0);
-            tfm.localPosition = new Vector3(-player_camera_tfm.localPosition.x, -player_camera_tfm.localPosition.y, -player_camera_tfm.localPosition.z + 0.2f);
+            pocket_tfm.localRotation = Quaternion.Euler(0, player_camera_tfm.localRotation.eulerAngles.y, 0);
+            tfm.localPosition = new Vector3(0, 0, 0.2f);
         }
     }
 
