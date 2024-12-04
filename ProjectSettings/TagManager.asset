@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Anchor
   - OtherCamera
+  - CameraBody
+  - Lefty
+  - Righty
   layers:
   - Default
   - TransparentFX
@@ -25,7 +28,7 @@ TagManager:
   - 
   - MainGround
   - 
-  - 
+  - Camera
   - 
   - 
   - 

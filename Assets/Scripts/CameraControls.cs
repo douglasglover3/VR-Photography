@@ -23,6 +23,8 @@ public class CameraControls : MonoBehaviour
     XRBaseInputInteractor interactor;
     Transform tfm;
     Transform pocket_tfm;
+    Transform player_camera_tfm;
+    bool camera_pocketed = false;
 
     // Start is called before the first frame update
     void Start()
@@ -30,14 +32,24 @@ public class CameraControls : MonoBehaviour
         cmra = GetComponent<Camera>();
         tfm = GetComponent<Transform>().parent;
         pocket_tfm = GameObject.Find("Pocket").transform;
+        player_camera_tfm = pocket_tfm.parent.GetChild(0).transform.GetChild(0).transform;
         interactable = GetComponentInParent<XRGrabInteractable>();
+    }
+
+    void Update()
+    {
+        if (camera_pocketed)
+        {
+            pocket_tfm.localRotation = new Quaternion(0, player_camera_tfm.localRotation.y, 0, 0);
+            tfm.localPosition = new Vector3(-player_camera_tfm.localPosition.x, -player_camera_tfm.localPosition.y, -player_camera_tfm.localPosition.z + 0.2f);
+        }
     }
 
     public void PickUpCamera()
     {
-        interactor = interactable.interactorsSelecting[0] as XRBaseInputInteractor;
         tfm.parent = null;
         tfm.gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+        camera_pocketed = false;
     }
 
     public void LetGoOfCamera()
@@ -46,6 +58,7 @@ public class CameraControls : MonoBehaviour
         tfm.localPosition = new Vector3(0, 0, 0);
         tfm.localRotation = new Quaternion(0, 0, 0, 0);
         tfm.gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+        camera_pocketed = true;
     }
 
     public void TakePhoto()

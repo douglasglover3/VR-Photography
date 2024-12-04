@@ -6,10 +6,13 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using Unity.VRTemplate;
+using static UnityEngine.Rendering.DebugUI;
 
 public class SettingsControls : MonoBehaviour
 {
     Transform UICanvas;
+    Transform ViewPanel;
     Transform SettingsPanel;
     Transform GalleryPanel;
     string[] ShutterSpeedValues = { "1/2", "1/4", "1/8", "1/15", "1/30", "1/60", "1/125", "1/250", "1/500", "1/1000", "1/2000", "1/4000", "1/8000" };
@@ -29,13 +32,13 @@ public class SettingsControls : MonoBehaviour
     MotionBlur Motionblur;
     FilmGrain Grain;
     ColorAdjustments Color;
-    bool screenSizeExpanded = false;
 
     // Start is called before the first frame update
     void Start()
     {
         SettingsPanel = GetComponent<Transform>();
         UICanvas = SettingsPanel.parent;
+        ViewPanel = UICanvas.GetChild(0);
         GalleryPanel = UICanvas.GetChild(2);
         GlobalVolume = GameObject.Find("Global Volume").GetComponent<Volume>();
         GlobalVolume.profile.TryGet<DepthOfField>(out DoF);
@@ -65,9 +68,11 @@ public class SettingsControls : MonoBehaviour
         Color.postExposure.value = ShutterSpeedExposure[CurrentShutterSpeed] + ApertureExposure[CurrentAperture] + ISOExposure[CurrentISO];
     }
 
-    public void OnChangeFocus()
+    public void OnChangeFocus(float value)
     {
-        DoF.focusDistance.value = 1;
+        DoF.focusDistance.value = value * 10;
+        float scale_value = value + 1;
+        ViewPanel.GetChild(1).transform.localScale = new Vector3(scale_value, scale_value, scale_value);
     }
 
     public void OnChangeISO()
@@ -88,14 +93,12 @@ public class SettingsControls : MonoBehaviour
         {
             PressSettings();
         }
-        screenSizeExpanded = true;
         UICanvas.localPosition = new Vector3(0, 0, -200);
         UICanvas.localScale = new Vector3(3, 3, 3);
     }
 
     public void ReduceScreen()
     {
-        screenSizeExpanded = false;
         UICanvas.localPosition = new Vector3(0, 0, 0);
         UICanvas.localScale = new Vector3(1, 1, 1);
     }
