@@ -74,11 +74,6 @@ public class CameraControls : MonoBehaviour
         photo.Apply();
         RenderTexture.active = old_rt;
 
-        if (interactable.isSelected)
-        {
-            interactor.SendHapticImpulse(0.2f, 0.2f);
-        }
-
         byte[] bytes = photo.EncodeToPNG();
         Directory.CreateDirectory(Application.persistentDataPath + "/photos");
         File.WriteAllBytes(Application.persistentDataPath + "/photos/" + "photo_" + filename_suffix + ".png", bytes);
